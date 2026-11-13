@@ -87,7 +87,28 @@ function daysView(){
    $('#rawtoggle').textContent=$('#raw').classList.contains('hidden')?'abrir texto integral':'fechar texto integral'
  };
 }
-function resView(){let h=`<div class="section"><h2>Reservas & tarefas</h2></div><input class="search" id="rs" placeholder="Pesquisar…"><div class="grid" id="rlist">`+APP_DATA.reservations.map(r=>`<div class="card ri"><div class="summary">${r.when}</div><h3>${r.name}</h3><span class="badge ${r.status==='RESERVADO'?'reserved':r.status==='POR TRATAR'?'todo':'confirm'}">${r.status}</span><p>${r.note}</p></div>`).join('')+`</div>`;$('#content').innerHTML=h;$('#rs').oninput=e=>$$('.ri').forEach(x=>x.classList.toggle('hidden',!x.innerText.toLowerCase().includes(e.target.value.toLowerCase())))}
+function resView(){
+ let h=`<div class="section"><h2>Reservas & bilhetes</h2></div>
+ <div class="ticket-actions top-actions">
+   <a class="folder-btn" target="_blank" rel="noopener" href="${APP_DATA.ticketsFolder}">📁 Abrir pasta de bilhetes no Google Drive ↗</a>
+   <a class="folder-btn" href="./lembretes_coreia_2026.ics">🔔 Importar lembretes</a>
+ </div>
+ <input class="search" id="rs" placeholder="Pesquisar…"><div class="grid" id="rlist">`+
+ APP_DATA.reservations.map(r=>{
+   let links=(r.links||[]).map(l=>`<a class="ticket-btn" target="_blank" rel="noopener" href="${l.url}">${l.label} ↗</a>`).join('');
+   let print=/ktx/i.test(r.name)?`<div class="print-note">🖨️ Levar os 4 bilhetes KTX impressos. A cópia digital fica como backup.</div>`:'';
+   return `<div class="card ri">
+     <div class="summary">${r.when}</div>
+     <h3>${r.name}</h3>
+     <span class="badge ${r.status==='RESERVADO'?'reserved':r.status==='POR TRATAR'?'todo':'confirm'}">${r.status}</span>
+     <p>${r.note}</p>
+     ${print}
+     ${links?`<div class="ticket-actions">${links}</div>`:''}
+   </div>`;
+ }).join('')+`</div>`;
+ $('#content').innerHTML=h;
+ $('#rs').oninput=e=>$$('.ri').forEach(x=>x.classList.toggle('hidden',!x.innerText.toLowerCase().includes(e.target.value.toLowerCase())));
+}
 function alertsView(){let h=`<div class="section"><h2>Alertas críticos</h2></div>`+APP_DATA.critical.map(x=>`<div class="alert"><b>${x.title}</b><br>${x.text}</div>`).join('');$('#content').innerHTML=h}
 function infoView(){let h=`<div class="section"><h2>Alojamentos</h2></div><div class="grid">`+APP_DATA.hotels.map(x=>`<div class="card"><div class="summary">${x.city}</div><h3>${x.name}</h3><p>${x.address}</p><a class="map" target="_blank" href="${navUrl(x.name+' '+x.address)}">Naver Map ↗</a></div>`).join('')+`</div><div class="section"><h2>Regras rápidas</h2></div><div class="grid">
 <div class="card"><h3>🚇 Transportes</h3><p>T-money na primeira parte da viagem. Climate Card 6–12/12. Hangang Bus pago separadamente. Aeroporto: AREX All-Stop, não Express.</p></div>
