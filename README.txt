@@ -48,3 +48,12 @@ VERSÃO v8
 - o separador AGORA recalcula automaticamente a cada 30 segundos
 - ao regressar à app depois de estar em segundo plano, o AGORA atualiza imediatamente
 - mantém funcionamento offline após uma abertura online bem-sucedida
+
+
+VERSÃO v9
+- botão “Verificar atualização” em INFO e versão instalada visível
+- version.json permite detetar futuras versões sem reinstalar a PWA
+- pesquisas Naver convertidas para nomes coreanos/moradas mais específicas
+- corrigidos destinos errados (ex.: Naksan, regressos, Cheonmasan, aeroporto)
+- Google Maps adicionado como fallback ao lado do Naver
+- CCA Hair aparece como mapa alternativo no bloco Hongdae

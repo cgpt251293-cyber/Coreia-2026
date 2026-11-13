@@ -1,20 +1,29 @@
+const APP_VERSION='v9';
 let nowAutoTimer=null;
 
 const $=q=>document.querySelector(q), $$=q=>[...document.querySelectorAll(q)];
 let view='now', selected=APP_DATA.days[0].date;
 const done=JSON.parse(localStorage.getItem('coreia_done_v2')||'{}');
 function navUrl(q){return 'https://map.naver.com/p/search/'+encodeURIComponent(q)}
+function googleUrl(q){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q)}
 function kNow(){let p=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date()),o={};p.forEach(x=>o[x.type]=x.value);return{date:`${o.year}-${o.month}-${o.day}`,mins:+o.hour*60+ +o.minute}}
 function mins(s){let m=(s||'').match(/(\d{1,2}):(\d{2})/);return m?+m[1]*60+ +m[2]:null}
 function renderTabs(){ $('#tabs').innerHTML=APP_DATA.days.map(d=>`<button class="tab ${d.date===selected?'on':''}" data-date="${d.date}">${d.label}</button>`).join(''); $$('.tab').forEach(b=>b.onclick=()=>{selected=b.dataset.date;view='days';setNav();render();renderTabs()})}
 function eventHTML(e,i,d,now=false){
  const k=d+'-'+i, is=!!done[k];
+ let maps='';
+ if(e.map){
+   maps+=`<div class="map-actions"><a class="map" href="${navUrl(e.map)}" target="_blank" rel="noopener">Naver Map ↗</a><a class="map secondary" href="${googleUrl(e.map)}" target="_blank" rel="noopener">Google Maps ↗</a></div>`;
+ }
+ if(e.altMap){
+   maps+=`<div class="map-actions"><span class="map-label">${e.altMapLabel||'Alternativa'}:</span><a class="map" href="${navUrl(e.altMap)}" target="_blank" rel="noopener">Naver ↗</a><a class="map secondary" href="${googleUrl(e.altMap)}" target="_blank" rel="noopener">Google ↗</a></div>`;
+ }
  return `<div class="event ${now?'now':''} ${is?'completed':''}">
  <button class="done ${is?'on':''}" data-k="${k}" aria-label="Concluído"></button>
  <div class="time">${e.time}</div>
  <div><div class="title">${e.title}</div>${e.summary?`<div class="summary">${e.summary}</div>`:''}
  ${e.details?`<button class="toggle" data-toggle>ver detalhes</button><div class="details hidden">${e.details.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')}</div>`:''}
- ${e.map?`<a class="map" href="${navUrl(e.map)}" target="_blank">Naver Map ↗</a>`:''}</div></div>`
+ ${maps}</div></div>`
 }
 function bind(){
  $$('[data-k]').forEach(b=>b.onclick=()=>{
@@ -111,11 +120,42 @@ function resView(){
  $('#rs').oninput=e=>$$('.ri').forEach(x=>x.classList.toggle('hidden',!x.innerText.toLowerCase().includes(e.target.value.toLowerCase())));
 }
 function alertsView(){let h=`<div class="section"><h2>Alertas críticos</h2></div>`+APP_DATA.critical.map(x=>`<div class="alert"><b>${x.title}</b><br>${x.text}</div>`).join('');$('#content').innerHTML=h}
-function infoView(){let h=`<div class="section"><h2>Alojamentos</h2></div><div class="grid">`+APP_DATA.hotels.map(x=>`<div class="card"><div class="summary">${x.city}</div><h3>${x.name}</h3><p>${x.address}</p><a class="map" target="_blank" href="${navUrl(x.name+' '+x.address)}">Naver Map ↗</a></div>`).join('')+`</div><div class="section"><h2>Regras rápidas</h2></div><div class="grid">
-<div class="card"><h3>🚇 Transportes</h3><p>T-money na primeira parte da viagem. Climate Card 6–12/12. Hangang Bus pago separadamente. Aeroporto: AREX All-Stop, não Express.</p></div>
-<div class="card"><h3>🧾 Tax refund</h3><p>Mostrar passaporte antes de pagar e perguntar “Immediate tax refund?”. Guardar vouchers quando não for imediato. Produtos com tax refund devem sair da Coreia sem uso.</p></div>
-<div class="card"><h3>🗺️ Navegação</h3><p>Naver Map para transporte e caminhadas. k.ride primeiro para táxi; Uber como alternativa.</p></div>
-<div class="card"><h3>☎️ Emergência</h3><p><b>112</b> polícia · <b>119</b> ambulância/bombeiros · <b>1330</b> Korea Travel Helpline.</p></div></div>`;$('#content').innerHTML=h}
+function infoView(){
+ let h=`<div class="section"><h2>App</h2></div>
+ <div class="card update-card"><h3>Coreia 2026 · ${APP_VERSION}</h3><p id="updateStatus">Versão instalada: <b>${APP_VERSION}</b></p><button class="update-btn" id="checkUpdate">🔄 Verificar atualização</button></div>
+ <div class="section"><h2>Alojamentos</h2></div><div class="grid">`+
+ APP_DATA.hotels.map(x=>`<div class="card"><div class="summary">${x.city}</div><h3>${x.name}</h3><p>${x.address}</p><div class="map-actions"><a class="map" target="_blank" rel="noopener" href="${navUrl(x.map||x.name+' '+x.address)}">Naver Map ↗</a><a class="map secondary" target="_blank" rel="noopener" href="${googleUrl(x.map||x.name+' '+x.address)}">Google Maps ↗</a></div></div>`).join('')+
+ `</div><div class="section"><h2>Regras rápidas</h2></div><div class="grid">
+ <div class="card"><h3>🚇 Transportes</h3><p>T-money na primeira parte da viagem. Climate Card 6–12/12. Hangang Bus pago separadamente. Aeroporto: AREX All-Stop, não Express.</p></div>
+ <div class="card"><h3>🧾 Tax refund</h3><p>Mostrar passaporte antes de pagar e perguntar “Immediate tax refund?”. Guardar vouchers quando não for imediato. Produtos com tax refund devem sair da Coreia sem uso.</p></div>
+ <div class="card"><h3>🗺️ Navegação</h3><p>Usar Naver Map primeiro. Os botões agora pesquisam nomes coreanos/moradas; Google Maps fica como alternativa se o Naver não resolver um local.</p></div>
+ <div class="card"><h3>☎️ Emergência</h3><p><b>112</b> polícia · <b>119</b> ambulância/bombeiros · <b>1330</b> Korea Travel Helpline.</p></div></div>`;
+ $('#content').innerHTML=h;
+ $('#checkUpdate').onclick=checkForUpdate;
+}
+async function checkForUpdate(){
+ const s=$('#updateStatus'), b=$('#checkUpdate');
+ try{
+   b.disabled=true;s.innerHTML='A verificar…';
+   const r=await fetch('./version.json?t='+Date.now(),{cache:'no-store'});
+   if(!r.ok) throw new Error('version');
+   const v=await r.json();
+   if(v.version===APP_VERSION){
+     s.innerHTML=`Já tens a versão mais recente: <b>${APP_VERSION}</b>.`;
+     b.disabled=false;
+     return;
+   }
+   s.innerHTML=`Nova versão <b>${v.version}</b> encontrada. A atualizar…`;
+   if('serviceWorker' in navigator){
+     const reg=await navigator.serviceWorker.getRegistration();
+     if(reg) await reg.update();
+   }
+   setTimeout(()=>location.replace(location.pathname+'?updated='+Date.now()),900);
+ }catch(err){
+   s.textContent=navigator.onLine?'Não consegui verificar agora. Tenta novamente.':'Sem Internet — não é possível verificar atualizações.';
+   b.disabled=false;
+ }
+}
 function setNav(){$$('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.view===view))}
 function render(){view==='now'?nowView():view==='days'?daysView():view==='res'?resView():view==='alerts'?alertsView():infoView()}
 $$('.nav button').forEach(b=>b.onclick=()=>{view=b.dataset.view;setNav();render()});
