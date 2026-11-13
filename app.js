@@ -1,20 +1,54 @@
-const APP_VERSION='v14';
+const APP_VERSION='v17';
 let nowAutoTimer=null;
 
 const $=q=>document.querySelector(q), $$=q=>[...document.querySelectorAll(q)];
 let view='now', selected=APP_DATA.days[0].date;
 const done=JSON.parse(localStorage.getItem('coreia_done_v2')||'{}');
+let flightDelayMode=localStorage.getItem('coreia_flight_delay')==='1';
 function navUrl(q){return 'https://map.naver.com/p/search/'+encodeURIComponent(q)}
 function googleUrl(q){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q)}
 function krideIntentUrl(){return 'https://service.kride.kakaomobility.com/3xb7d9'}
-function kNow(){let p=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date()),o={};p.forEach(x=>o[x.type]=x.value);return{date:`${o.year}-${o.month}-${o.day}`,mins:+o.hour*60+ +o.minute}}
+function nowInZone(zone){
+ let p=new Intl.DateTimeFormat('en-CA',{timeZone:zone||'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date()),o={};
+ p.forEach(x=>o[x.type]=x.value);
+ return{date:`${o.year}-${o.month}-${o.day}`,mins:+o.hour*60+ +o.minute,zone:zone||'Asia/Seoul'}
+}
 function mins(s){let m=(s||'').match(/(\d{1,2}):(\d{2})/);return m?+m[1]*60+ +m[2]:null}
+
+function activeDay(base){
+ if(!flightDelayMode || !APP_DATA.flightDelayScenario) return base;
+ const o=APP_DATA.flightDelayScenario.overrides[base.date];
+ if(!o) return base;
+ const copy={...base};
+ if(o.heading) copy.heading=o.heading;
+ if(o.subtitle) copy.subtitle=o.subtitle;
+ if(o.events) copy.events=o.events;
+ else if(o.prependEvents) copy.events=[...o.prependEvents,...base.events];
+ if(o.daySections){
+   copy.daySections=[...(o.daySections||[]),...(base.daySections||[])];
+ }
+ return copy;
+}
+function delayBanner(){
+ return flightDelayMode?`<div class="delay-banner">⚠️ Modo atraso de voo ativo · chegada prevista 28/11</div>`:'';
+}
+function toggleFlightDelay(){
+ flightDelayMode=!flightDelayMode;
+ localStorage.setItem('coreia_flight_delay',flightDelayMode?'1':'0');
+ render();
+ renderTabs();
+}
+
 function renderTabs(){ $('#tabs').innerHTML=APP_DATA.days.map(d=>`<button class="tab ${d.date===selected?'on':''}" data-date="${d.date}">${d.label}</button>`).join(''); $$('.tab').forEach(b=>b.onclick=()=>{selected=b.dataset.date;view='days';setNav();render();renderTabs()})}
 function eventHTML(e,i,d,now=false){
  const k=d+'-'+i, is=!!done[k];
  let maps='';
  if(e.map){
-   maps+=`<div class="map-actions"><a class="map" href="${navUrl(e.map)}" target="_blank" rel="noopener">Naver → destino ↗</a><a class="map secondary" href="${googleUrl(e.map)}" target="_blank" rel="noopener">Google → destino ↗</a></div>`;
+   if(e.mapProvider==='google'){
+     maps+=`<div class="map-actions"><a class="map secondary" href="${googleUrl(e.map)}" target="_blank" rel="noopener">Google Maps → destino ↗</a></div>`;
+   }else{
+     maps+=`<div class="map-actions"><a class="map" href="${navUrl(e.map)}" target="_blank" rel="noopener">Naver → destino ↗</a><a class="map secondary" href="${googleUrl(e.map)}" target="_blank" rel="noopener">Google → destino ↗</a></div>`;
+   }
  }
  if(e.altMap){
    maps+=`<div class="map-actions"><span class="map-label">${e.altMapLabel||'Alternativa'}:</span><a class="map" href="${navUrl(e.altMap)}" target="_blank" rel="noopener">Naver ↗</a><a class="map secondary" href="${googleUrl(e.altMap)}" target="_blank" rel="noopener">Google ↗</a></div>`;
@@ -64,18 +98,25 @@ function bind(){
 }
 function recentFor(date){return ''}
 function current(){
- let n=kNow(), di=APP_DATA.days.findIndex(d=>d.date===n.date);
+ let matchedIndex=-1, now=null;
+ for(let i=0;i<APP_DATA.days.length;i++){
+   const ad=activeDay(APP_DATA.days[i]);
+   const n=nowInZone(ad.timeZone||'Asia/Seoul');
+   if(n.date===ad.date){matchedIndex=i;now=n;break}
+ }
+ let di=matchedIndex;
  if(di<0){
-   di=APP_DATA.days.findIndex(d=>d.date>n.date);
+   const koreaNow=nowInZone('Asia/Seoul');
+   di=APP_DATA.days.findIndex(d=>d.date>koreaNow.date);
    if(di<0)di=APP_DATA.days.length-1;
-   let fd=APP_DATA.days[di], fi=fd.events.findIndex((e,i)=>!done[fd.date+'-'+i]);
+   let fd=activeDay(APP_DATA.days[di]), fi=fd.events.findIndex((e,i)=>!done[fd.date+'-'+i]);
    return{day:fd,idx:fi<0?0:fi,future:true}
  }
- let d=APP_DATA.days[di], chrono=0;
+ let d=activeDay(APP_DATA.days[di]), chrono=0;
  for(let i=0;i<d.events.length;i++){
    let a=mins(d.events[i].time),b=i<d.events.length-1?mins(d.events[i+1].time):null;
-   if(a!==null&&n.mins>=a&&(b===null||n.mins<b)){chrono=i;break}
-   if(a!==null&&n.mins<a){chrono=i;break}
+   if(a!==null&&now.mins>=a&&(b===null||now.mins<b)){chrono=i;break}
+   if(a!==null&&now.mins<a){chrono=i;break}
    chrono=i
  }
  let idx=chrono;
@@ -91,7 +132,7 @@ function nowView(){
  selected=d.date;
  renderTabs();
  let e=d.events[c.idx]||{title:d.heading,time:'',summary:''};
- let h=`<div class="nowhero"><div class="ey">${c.future?'PRÓXIMO DIA':'AGORA · HORA DA COREIA'}</div><h2>${e.title}</h2><p>${d.label} · ${d.subtitle||d.heading}<br>${e.time||''}</p></div>`;
+ let h=delayBanner()+`<div class="nowhero"><div class="ey">${c.future?'PRÓXIMO DIA':(d.timeZone==='Europe/Copenhagen'?'AGORA · HORA DE COPENHAGA':'AGORA · HORA DA COREIA')}</div><h2>${e.title}</h2><p>${d.label} · ${d.subtitle||d.heading}<br>${e.time||''}</p></div>`;
  if(d.events.length){
    h+=`<div class="section"><h2>${c.future?'Próximo':'AGORA'}</h2></div>${eventHTML(e,c.idx,d.date,true)}`;
    if(d.events[c.idx+1]) h+=`<div class="section"><h2>A SEGUIR</h2></div>${eventHTML(d.events[c.idx+1],c.idx+1,d.date)}`;
@@ -106,8 +147,8 @@ function nowView(){
  bind();
 }
 function daysView(){
- let d=APP_DATA.days.find(x=>x.date===selected);
- let h=`<div class="dayhead"><div class="date">${d.label}</div><div class="city">${d.subtitle||d.heading}</div></div>`+
+ let d=activeDay(APP_DATA.days.find(x=>x.date===selected));
+ let h=delayBanner()+`<div class="dayhead"><div class="date">${d.label}</div><div class="city">${d.subtitle||d.heading}</div></div>`+
  d.events.map((e,i)=>eventHTML(e,i,d.date)).join('');
  if((d.daySections||[]).length){
    h+=`<div class="section"><h2>Notas do dia</h2></div>`+
@@ -145,9 +186,10 @@ function resView(){
  $('#content').innerHTML=h;
  $('#rs').oninput=e=>$$('.ri').forEach(x=>x.classList.toggle('hidden',!x.innerText.toLowerCase().includes(e.target.value.toLowerCase())));
 }
-function alertsView(){let h=`<div class="section"><h2>Alertas críticos</h2></div>`+APP_DATA.critical.map(x=>`<div class="alert"><b>${x.title}</b><br>${x.text}</div>`).join('');$('#content').innerHTML=h}
+function alertsView(){let h=`<div class="card delay-control"><h3>✈️ Atraso / perda do voo</h3><p>${APP_DATA.flightDelayScenario.description}</p><button class="delay-toggle ${flightDelayMode?'on':''}" id="delayToggle">${flightDelayMode?'Desativar modo atraso':'Ativar chegada em 28/11'}</button></div>`+`<div class="section"><h2>Alertas críticos</h2></div>`+APP_DATA.critical.map(x=>`<div class="alert"><b>${x.title}</b><br>${x.text}</div>`).join('');$('#content').innerHTML=h;$('#delayToggle').onclick=toggleFlightDelay}
 function infoView(){
  let h=`<div class="section"><h2>App</h2></div>
+ <div class="card delay-control"><h3>✈️ Modo atraso de voo</h3><p>${flightDelayMode?'ATIVO — chegada prevista em 28/11':'Desativado — roteiro normal'}</p><button class="delay-toggle ${flightDelayMode?'on':''}" id="delayToggleInfo">${flightDelayMode?'Desativar':'Ativar chegada em 28/11'}</button></div>
  <div class="card update-card"><h3>Coreia 2026 · ${APP_VERSION}</h3><p id="updateStatus">Versão instalada: <b>${APP_VERSION}</b></p><button class="update-btn" id="checkUpdate">🔄 Verificar atualização</button></div>
  <div class="section"><h2>Alojamentos</h2></div><div class="grid">`+
  APP_DATA.hotels.map(x=>`<div class="card"><div class="summary">${x.city}</div><h3>${x.name}</h3><p>${x.address}</p><div class="map-actions"><a class="map" target="_blank" rel="noopener" href="${navUrl(x.map||x.name+' '+x.address)}">Naver → destino ↗</a><a class="map secondary" target="_blank" rel="noopener" href="${googleUrl(x.map||x.name+' '+x.address)}">Google Maps ↗</a></div></div>`).join('')+
@@ -157,7 +199,7 @@ function infoView(){
  <div class="card"><h3>🗺️ Navegação</h3><p>Usar Naver Map primeiro. Os botões agora pesquisam nomes coreanos/moradas; Google Maps fica como alternativa se o Naver não resolver um local.</p></div>
  <div class="card"><h3>☎️ Emergência</h3><p><b>112</b> polícia · <b>119</b> ambulância/bombeiros · <b>1330</b> Korea Travel Helpline.</p></div></div>`;
  $('#content').innerHTML=h;
- $('#checkUpdate').onclick=checkForUpdate;
+ $('#checkUpdate').onclick=checkForUpdate;$('#delayToggleInfo').onclick=toggleFlightDelay;
 }
 async function checkForUpdate(){
  const s=$('#updateStatus'), b=$('#checkUpdate');

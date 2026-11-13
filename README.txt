@@ -92,3 +92,31 @@ VERSÃO v14
 - corrigido 29/11 “Sair do hotel” → Seomyeon Station
 - corrigidos vários outros casos: Sungnyemun → Seoul Station, Hangang Bus → Jamsil pier, etc.
 - botões de deslocação identificados como “Naver → destino” / “Google → destino”
+
+
+VERSÃO v15
+- acrescentado modo “Atraso / perda do voo”
+- ativação reversível em ALERTAS ou INFO
+- 27/11 passa para reacomodação
+- 28/11 passa a ser chegada a Incheon + transferência noturna para Busan
+- turismo do dia 28 é marcado como perdido
+- 29/11 recebe blocos de chegada cedo a Busan + descanso curto, mantendo Christmas Village
+- roteiro normal nunca é apagado; basta desativar o modo
+
+
+VERSÃO v16
+- modo atraso de voo passa a refletir o voo real: SK987 CPH 23:20 do dia seguinte
+- 27/11 = roteiro turístico completo em Copenhaga
+- inclui Rosenborg/Kongens Have, Round Tower opcional, Strøget, Højbro Plads Christmas Market, Nyhavn, Amalienborg e Christmas in Tivoli
+- regresso ao CPH ~19:20–19:30 para voo 23:20
+- eventos de Copenhaga usam Google Maps em vez de Naver
+- 28/11 = chegada ICN 19:00 + transferência noturna para Busan
+
+
+VERSÃO v17
+- acrescentado 13/12: escala de regresso em Copenhaga 05:25–15:05
+- roteiro compacto: Nyhavn, Amalienborg/Marmorkirken, Rosenborg/Kongens Have, pequeno-almoço, Strøget e Christiansborg
+- inclui controlo Schengen/EES e instruções específicas para viajante brasileiro
+- regresso ao CPH ~11:30–11:45, mais de 3 h antes do voo
+- AGORA passa a respeitar o fuso de cada dia: Coreia nos dias coreanos e Europe/Copenhagen nos dias em Copenhaga
+- corrigido também o modo alternativo de 27/11 para usar hora de Copenhaga

@@ -42,3 +42,8 @@ main{padding:13px}.nowhero{background:linear-gradient(135deg,#111827,#312e81);co
 .kride-btn,.copy-dest{border:0;border-radius:9px;padding:8px 10px;font-size:10px;font-weight:850;text-decoration:none;cursor:pointer}
 .kride-btn{background:#fee500;color:#111827}
 .copy-dest{background:#fff;color:#374151;border:1px solid #d1d5db}
+
+.delay-banner{background:#fff7ed;border:1px solid #fb923c;color:#9a3412;border-radius:11px;padding:9px 11px;margin-bottom:10px;font-size:11px;font-weight:900}
+.delay-control{margin-bottom:12px}
+.delay-toggle{border:0;border-radius:10px;background:#111827;color:#fff;padding:9px 11px;font-size:11px;font-weight:900;cursor:pointer}
+.delay-toggle.on{background:#b45309}
