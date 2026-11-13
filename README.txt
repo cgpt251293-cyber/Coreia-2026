@@ -42,3 +42,9 @@ VERSÃO v6
 - indicador “v6” visível no topo da app
 - Notas do dia são renderizadas fora das atividades
 - Dia 30 verificado: Opção B / atrasos / resumo não aparecem dentro da última atividade
+
+
+VERSÃO v8
+- o separador AGORA recalcula automaticamente a cada 30 segundos
+- ao regressar à app depois de estar em segundo plano, o AGORA atualiza imediatamente
+- mantém funcionamento offline após uma abertura online bem-sucedida

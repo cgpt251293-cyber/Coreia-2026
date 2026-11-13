@@ -1,3 +1,4 @@
+let nowAutoTimer=null;
 
 const $=q=>document.querySelector(q), $$=q=>[...document.querySelectorAll(q)];
 let view='now', selected=APP_DATA.days[0].date;
@@ -121,3 +122,21 @@ $$('.nav button').forEach(b=>b.onclick=()=>{view=b.dataset.view;setNav();render(
 renderTabs();render();
 let dp;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('#install').style.display='block'});$('#install').onclick=async()=>{if(dp){dp.prompt();await dp.userChoice;dp=null;$('#install').style.display='none'}};
 if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js');
+
+
+function startNowAutoRefresh(){
+  if(nowAutoTimer) clearInterval(nowAutoTimer);
+  nowAutoTimer=setInterval(()=>{
+    if(view==='now'){
+      nowView();
+    }
+  },30000);
+}
+
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible' && view==='now'){
+    nowView();
+  }
+});
+
+startNowAutoRefresh();
