@@ -78,3 +78,9 @@ VERSÃO v12
 - todos os troços que incluem táxi/k.ride passam também a mostrar Naver Map e Google Maps
 - isto permite comparar transporte público com táxi no próprio cartão
 - corrigido em particular 01/12 14:10 Huinnyeoul → National Maritime Museum
+
+
+VERSÃO v13
+- botão “Abrir k.ride” passa a usar o link oficial “Start app” da Kakao Mobility
+- este link deve abrir a app k.ride instalada e só encaminhar para a loja quando necessário
+- removido o intent Android artesanal que estava a cair diretamente na Play Store

@@ -1,4 +1,4 @@
-const APP_VERSION='v12';
+const APP_VERSION='v13';
 let nowAutoTimer=null;
 
 const $=q=>document.querySelector(q), $$=q=>[...document.querySelectorAll(q)];
@@ -6,10 +6,7 @@ let view='now', selected=APP_DATA.days[0].date;
 const done=JSON.parse(localStorage.getItem('coreia_done_v2')||'{}');
 function navUrl(q){return 'https://map.naver.com/p/search/'+encodeURIComponent(q)}
 function googleUrl(q){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q)}
-function krideIntentUrl(){
-  return 'intent://#Intent;package=com.kakaomobility.kride;S.browser_fallback_url='+
-    encodeURIComponent('https://play.google.com/store/apps/details?id=com.kakaomobility.kride')+';end';
-}
+function krideIntentUrl(){return 'https://service.kride.kakaomobility.com/3xb7d9'}
 function kNow(){let p=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date()),o={};p.forEach(x=>o[x.type]=x.value);return{date:`${o.year}-${o.month}-${o.day}`,mins:+o.hour*60+ +o.minute}}
 function mins(s){let m=(s||'').match(/(\d{1,2}):(\d{2})/);return m?+m[1]*60+ +m[2]:null}
 function renderTabs(){ $('#tabs').innerHTML=APP_DATA.days.map(d=>`<button class="tab ${d.date===selected?'on':''}" data-date="${d.date}">${d.label}</button>`).join(''); $$('.tab').forEach(b=>b.onclick=()=>{selected=b.dataset.date;view='days';setNav();render();renderTabs()})}
