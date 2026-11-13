@@ -1,4 +1,4 @@
-const APP_VERSION='v13';
+const APP_VERSION='v14';
 let nowAutoTimer=null;
 
 const $=q=>document.querySelector(q), $$=q=>[...document.querySelectorAll(q)];
@@ -14,7 +14,7 @@ function eventHTML(e,i,d,now=false){
  const k=d+'-'+i, is=!!done[k];
  let maps='';
  if(e.map){
-   maps+=`<div class="map-actions"><a class="map" href="${navUrl(e.map)}" target="_blank" rel="noopener">Naver Map ↗</a><a class="map secondary" href="${googleUrl(e.map)}" target="_blank" rel="noopener">Google Maps ↗</a></div>`;
+   maps+=`<div class="map-actions"><a class="map" href="${navUrl(e.map)}" target="_blank" rel="noopener">Naver → destino ↗</a><a class="map secondary" href="${googleUrl(e.map)}" target="_blank" rel="noopener">Google → destino ↗</a></div>`;
  }
  if(e.altMap){
    maps+=`<div class="map-actions"><span class="map-label">${e.altMapLabel||'Alternativa'}:</span><a class="map" href="${navUrl(e.altMap)}" target="_blank" rel="noopener">Naver ↗</a><a class="map secondary" href="${googleUrl(e.altMap)}" target="_blank" rel="noopener">Google ↗</a></div>`;
@@ -150,7 +150,7 @@ function infoView(){
  let h=`<div class="section"><h2>App</h2></div>
  <div class="card update-card"><h3>Coreia 2026 · ${APP_VERSION}</h3><p id="updateStatus">Versão instalada: <b>${APP_VERSION}</b></p><button class="update-btn" id="checkUpdate">🔄 Verificar atualização</button></div>
  <div class="section"><h2>Alojamentos</h2></div><div class="grid">`+
- APP_DATA.hotels.map(x=>`<div class="card"><div class="summary">${x.city}</div><h3>${x.name}</h3><p>${x.address}</p><div class="map-actions"><a class="map" target="_blank" rel="noopener" href="${navUrl(x.map||x.name+' '+x.address)}">Naver Map ↗</a><a class="map secondary" target="_blank" rel="noopener" href="${googleUrl(x.map||x.name+' '+x.address)}">Google Maps ↗</a></div></div>`).join('')+
+ APP_DATA.hotels.map(x=>`<div class="card"><div class="summary">${x.city}</div><h3>${x.name}</h3><p>${x.address}</p><div class="map-actions"><a class="map" target="_blank" rel="noopener" href="${navUrl(x.map||x.name+' '+x.address)}">Naver → destino ↗</a><a class="map secondary" target="_blank" rel="noopener" href="${googleUrl(x.map||x.name+' '+x.address)}">Google Maps ↗</a></div></div>`).join('')+
  `</div><div class="section"><h2>Regras rápidas</h2></div><div class="grid">
  <div class="card"><h3>🚇 Transportes</h3><p>T-money na primeira parte da viagem. Climate Card 6–12/12. Hangang Bus pago separadamente. Aeroporto: AREX All-Stop, não Express.</p></div>
  <div class="card"><h3>🧾 Tax refund</h3><p>Mostrar passaporte antes de pagar e perguntar “Immediate tax refund?”. Guardar vouchers quando não for imediato. Produtos com tax refund devem sair da Coreia sem uso.</p></div>

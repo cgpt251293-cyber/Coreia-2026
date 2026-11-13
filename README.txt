@@ -84,3 +84,11 @@ VERSÃO v13
 - botão “Abrir k.ride” passa a usar o link oficial “Start app” da Kakao Mobility
 - este link deve abrir a app k.ride instalada e só encaminhar para a loja quando necessário
 - removido o intent Android artesanal que estava a cair diretamente na Play Store
+
+
+VERSÃO v14
+- auditadas as atividades de deslocação em todos os dias
+- Naver/Google passam a apontar para o DESTINO do movimento, não para a origem
+- corrigido 29/11 “Sair do hotel” → Seomyeon Station
+- corrigidos vários outros casos: Sungnyemun → Seoul Station, Hangang Bus → Jamsil pier, etc.
+- botões de deslocação identificados como “Naver → destino” / “Google → destino”
