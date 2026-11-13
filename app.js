@@ -8,7 +8,7 @@ function mins(s){let m=(s||'').match(/(\d{1,2}):(\d{2})/);return m?+m[1]*60+ +m[
 function renderTabs(){ $('#tabs').innerHTML=APP_DATA.days.map(d=>`<button class="tab ${d.date===selected?'on':''}" data-date="${d.date}">${d.label}</button>`).join(''); $$('.tab').forEach(b=>b.onclick=()=>{selected=b.dataset.date;view='days';setNav();render();renderTabs()})}
 function eventHTML(e,i,d,now=false){
  const k=d+'-'+i, is=!!done[k];
- return `<div class="event ${now?'now':''}">
+ return `<div class="event ${now?'now':''} ${is?'completed':''}">
  <button class="done ${is?'on':''}" data-k="${k}" aria-label="Concluído"></button>
  <div class="time">${e.time}</div>
  <div><div class="title">${e.title}</div>${e.summary?`<div class="summary">${e.summary}</div>`:''}
@@ -16,15 +16,38 @@ function eventHTML(e,i,d,now=false){
  ${e.map?`<a class="map" href="${navUrl(e.map)}" target="_blank">Naver Map ↗</a>`:''}</div></div>`
 }
 function bind(){
- $$('[data-k]').forEach(b=>b.onclick=()=>{done[b.dataset.k]=!done[b.dataset.k];localStorage.setItem('coreia_done_v2',JSON.stringify(done));b.classList.toggle('on')});
- $$('[data-toggle]').forEach(b=>b.onclick=()=>{let x=b.nextElementSibling;x.classList.toggle('hidden');b.textContent=x.classList.contains('hidden')?'ver detalhes':'fechar detalhes'})
+ $$('[data-k]').forEach(b=>b.onclick=()=>{
+   done[b.dataset.k]=!done[b.dataset.k];
+   localStorage.setItem('coreia_done_v2',JSON.stringify(done));
+   render();
+ });
+ $$('[data-toggle]').forEach(b=>b.onclick=()=>{
+   let x=b.nextElementSibling;x.classList.toggle('hidden');
+   b.textContent=x.classList.contains('hidden')?'ver detalhes':'fechar detalhes'
+ })
 }
-function recentFor(date){return APP_DATA.recent.filter(x=>x.date===date).map(x=>`<div class="update"><b>Atualização recente · ${x.time}</b><br>${x.title}<br>${x.note}</div>`).join('')}
+function recentFor(date){return ''}
 function current(){
  let n=kNow(), di=APP_DATA.days.findIndex(d=>d.date===n.date);
- if(di<0){di=APP_DATA.days.findIndex(d=>d.date>n.date);if(di<0)di=APP_DATA.days.length-1;return{day:APP_DATA.days[di],idx:0,future:true}}
- let d=APP_DATA.days[di], idx=0;
- for(let i=0;i<d.events.length;i++){let a=mins(d.events[i].time),b=i<d.events.length-1?mins(d.events[i+1].time):null;if(a!==null&&n.mins>=a&&(b===null||n.mins<b)){idx=i;break}if(a!==null&&n.mins<a){idx=i;break}idx=i}
+ if(di<0){
+   di=APP_DATA.days.findIndex(d=>d.date>n.date);
+   if(di<0)di=APP_DATA.days.length-1;
+   let fd=APP_DATA.days[di], fi=fd.events.findIndex((e,i)=>!done[fd.date+'-'+i]);
+   return{day:fd,idx:fi<0?0:fi,future:true}
+ }
+ let d=APP_DATA.days[di], chrono=0;
+ for(let i=0;i<d.events.length;i++){
+   let a=mins(d.events[i].time),b=i<d.events.length-1?mins(d.events[i+1].time):null;
+   if(a!==null&&n.mins>=a&&(b===null||n.mins<b)){chrono=i;break}
+   if(a!==null&&n.mins<a){chrono=i;break}
+   chrono=i
+ }
+ let idx=chrono;
+ while(idx<d.events.length && done[d.date+'-'+idx]) idx++;
+ if(idx>=d.events.length){
+   idx=d.events.findIndex((e,i)=>!done[d.date+'-'+i]);
+   if(idx<0) idx=d.events.length-1;
+ }
  return{day:d,idx,future:false}
 }
 function nowView(){let c=current(),d=c.day;selected=d.date;renderTabs();let e=d.events[c.idx]||{title:d.heading,time:'',summary:''};let h=`<div class="nowhero"><div class="ey">${c.future?'PRÓXIMO DIA':'AGORA · HORA DA COREIA'}</div><h2>${e.title}</h2><p>${d.label} · ${d.subtitle||d.heading}<br>${e.time||''}</p></div>${recentFor(d.date)}`;if(d.events.length){h+=`<div class="section"><h2>${c.future?'Próximo':'AGORA'}</h2></div>${eventHTML(e,c.idx,d.date,true)}`;if(d.events[c.idx+1])h+=`<div class="section"><h2>A SEGUIR</h2></div>${eventHTML(d.events[c.idx+1],c.idx+1,d.date)}`;h+=`<div class="section"><h2>Resto do dia</h2></div>`+d.events.slice(c.idx+2).map((x,j)=>eventHTML(x,c.idx+2+j,d.date)).join('')}$('#content').innerHTML=h;bind()}
