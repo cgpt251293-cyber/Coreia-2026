@@ -31,3 +31,14 @@ main{padding:13px}.nowhero{background:linear-gradient(135deg,#111827,#312e81);co
 .update-card{margin-bottom:12px}
 .update-btn{border:0;border-radius:10px;background:#111827;color:#fff;padding:9px 11px;font-weight:850;font-size:11px;cursor:pointer}
 .update-btn:disabled{opacity:.55}
+
+.taxi-box{margin-top:9px;border-radius:11px;padding:9px 10px;border:1px solid #e5e7eb}
+.taxi-box.recommended{background:#fff7ed;border-color:#fdba74}
+.taxi-box.optional{background:#f8fafc;border-color:#cbd5e1}
+.taxi-head{font-size:11px;font-weight:900;margin-bottom:3px}
+.taxi-note{font-size:10px;line-height:1.35;color:#4b5563;margin-bottom:5px}
+.taxi-dest{font-size:10px;line-height:1.35;word-break:break-word}
+.taxi-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}
+.kride-btn,.copy-dest{border:0;border-radius:9px;padding:8px 10px;font-size:10px;font-weight:850;text-decoration:none;cursor:pointer}
+.kride-btn{background:#fee500;color:#111827}
+.copy-dest{background:#fff;color:#374151;border:1px solid #d1d5db}

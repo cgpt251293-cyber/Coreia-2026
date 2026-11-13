@@ -1,4 +1,4 @@
-const APP_VERSION='v9';
+const APP_VERSION='v10';
 let nowAutoTimer=null;
 
 const $=q=>document.querySelector(q), $$=q=>[...document.querySelectorAll(q)];
@@ -6,6 +6,7 @@ let view='now', selected=APP_DATA.days[0].date;
 const done=JSON.parse(localStorage.getItem('coreia_done_v2')||'{}');
 function navUrl(q){return 'https://map.naver.com/p/search/'+encodeURIComponent(q)}
 function googleUrl(q){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q)}
+function krideUrl(){return 'https://utility.kride.kakaomobility.com/'}
 function kNow(){let p=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date()),o={};p.forEach(x=>o[x.type]=x.value);return{date:`${o.year}-${o.month}-${o.day}`,mins:+o.hour*60+ +o.minute}}
 function mins(s){let m=(s||'').match(/(\d{1,2}):(\d{2})/);return m?+m[1]*60+ +m[2]:null}
 function renderTabs(){ $('#tabs').innerHTML=APP_DATA.days.map(d=>`<button class="tab ${d.date===selected?'on':''}" data-date="${d.date}">${d.label}</button>`).join(''); $$('.tab').forEach(b=>b.onclick=()=>{selected=b.dataset.date;view='days';setNav();render();renderTabs()})}
@@ -18,12 +19,25 @@ function eventHTML(e,i,d,now=false){
  if(e.altMap){
    maps+=`<div class="map-actions"><span class="map-label">${e.altMapLabel||'Alternativa'}:</span><a class="map" href="${navUrl(e.altMap)}" target="_blank" rel="noopener">Naver ↗</a><a class="map secondary" href="${googleUrl(e.altMap)}" target="_blank" rel="noopener">Google ↗</a></div>`;
  }
+ let taxi='';
+ if(e.taxi){
+   const mode=e.taxi.mode==='recommended'?'Táxi recomendado':'Táxi opcional';
+   taxi=`<div class="taxi-box ${e.taxi.mode==='recommended'?'recommended':'optional'}">
+     <div class="taxi-head">🚕 ${mode}</div>
+     ${e.taxi.note?`<div class="taxi-note">${e.taxi.note}</div>`:''}
+     <div class="taxi-dest">Destino: <b>${e.taxi.destination}</b></div>
+     <div class="taxi-actions">
+       <a class="kride-btn" href="${krideUrl()}" target="_blank" rel="noopener">🚕 Abrir k.ride ↗</a>
+       <button class="copy-dest" data-copy="${e.taxi.destination.replaceAll('"','&quot;')}">📋 Copiar destino</button>
+     </div>
+   </div>`;
+ }
  return `<div class="event ${now?'now':''} ${is?'completed':''}">
  <button class="done ${is?'on':''}" data-k="${k}" aria-label="Concluído"></button>
  <div class="time">${e.time}</div>
  <div><div class="title">${e.title}</div>${e.summary?`<div class="summary">${e.summary}</div>`:''}
  ${e.details?`<button class="toggle" data-toggle>ver detalhes</button><div class="details hidden">${e.details.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')}</div>`:''}
- ${maps}</div></div>`
+ ${maps}${taxi}</div></div>`
 }
 function bind(){
  $$('[data-k]').forEach(b=>b.onclick=()=>{
@@ -32,9 +46,21 @@ function bind(){
    render();
  });
  $$('[data-toggle]').forEach(b=>b.onclick=()=>{
-   let x=b.nextElementSibling;x.classList.toggle('hidden');
+   let x=b.nextElementSibling;
+   x.classList.toggle('hidden');
    b.textContent=x.classList.contains('hidden')?'ver detalhes':'fechar detalhes'
- })
+ });
+ $$('.copy-dest').forEach(b=>b.onclick=async()=>{
+   const val=b.dataset.copy;
+   try{
+     await navigator.clipboard.writeText(val);
+     const old=b.textContent;
+     b.textContent='✓ Destino copiado';
+     setTimeout(()=>b.textContent=old,1600);
+   }catch(err){
+     prompt('Copiar destino para a k.ride:',val);
+   }
+ });
 }
 function recentFor(date){return ''}
 function current(){

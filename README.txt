@@ -57,3 +57,11 @@ VERSÃO v9
 - corrigidos destinos errados (ex.: Naksan, regressos, Cheonmasan, aeroporto)
 - Google Maps adicionado como fallback ao lado do Naver
 - CCA Hair aparece como mapa alternativo no bloco Hongdae
+
+
+VERSÃO v10
+- acrescentado bloco 🚕 k.ride apenas nos troços em que o roteiro prevê/considera táxi
+- distingue “Táxi recomendado” de “Táxi opcional”
+- botão “Abrir k.ride” usa a página oficial da k.ride
+- botão “Copiar destino” copia o destino em coreano para colar/pesquisar na app
+- não é usado um deep link de destino porque a k.ride não publica um esquema público estável para isso
