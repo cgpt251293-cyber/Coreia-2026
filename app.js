@@ -50,8 +50,43 @@ function current(){
  }
  return{day:d,idx,future:false}
 }
-function nowView(){let c=current(),d=c.day;selected=d.date;renderTabs();let e=d.events[c.idx]||{title:d.heading,time:'',summary:''};let h=`<div class="nowhero"><div class="ey">${c.future?'PRÓXIMO DIA':'AGORA · HORA DA COREIA'}</div><h2>${e.title}</h2><p>${d.label} · ${d.subtitle||d.heading}<br>${e.time||''}</p></div>${recentFor(d.date)}`;if(d.events.length){h+=`<div class="section"><h2>${c.future?'Próximo':'AGORA'}</h2></div>${eventHTML(e,c.idx,d.date,true)}`;if(d.events[c.idx+1])h+=`<div class="section"><h2>A SEGUIR</h2></div>${eventHTML(d.events[c.idx+1],c.idx+1,d.date)}`;h+=`<div class="section"><h2>Resto do dia</h2></div>`+d.events.slice(c.idx+2).map((x,j)=>eventHTML(x,c.idx+2+j,d.date)).join('')}$('#content').innerHTML=h;bind()}
-function daysView(){let d=APP_DATA.days.find(x=>x.date===selected);let h=`<div class="dayhead"><div class="date">${d.label}</div><div class="city">${d.subtitle||d.heading}</div></div>${recentFor(d.date)}`+d.events.map((e,i)=>eventHTML(e,i,d.date)).join('')+`<div class="section"><h2>Texto completo deste dia</h2><span>fonte PDF</span></div><button class="toggle" id="rawtoggle">abrir texto integral</button><div class="raw hidden" id="raw">${d.raw.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')}</div>`;$('#content').innerHTML=h;bind();$('#rawtoggle').onclick=()=>{$('#raw').classList.toggle('hidden');$('#rawtoggle').textContent=$('#raw').classList.contains('hidden')?'abrir texto integral':'fechar texto integral'}}
+function nowView(){
+ let c=current(),d=c.day;
+ selected=d.date;
+ renderTabs();
+ let e=d.events[c.idx]||{title:d.heading,time:'',summary:''};
+ let h=`<div class="nowhero"><div class="ey">${c.future?'PRÓXIMO DIA':'AGORA · HORA DA COREIA'}</div><h2>${e.title}</h2><p>${d.label} · ${d.subtitle||d.heading}<br>${e.time||''}</p></div>`;
+ if(d.events.length){
+   h+=`<div class="section"><h2>${c.future?'Próximo':'AGORA'}</h2></div>${eventHTML(e,c.idx,d.date,true)}`;
+   if(d.events[c.idx+1]) h+=`<div class="section"><h2>A SEGUIR</h2></div>${eventHTML(d.events[c.idx+1],c.idx+1,d.date)}`;
+   h+=`<div class="section"><h2>Resto do dia</h2></div>`+
+      d.events.slice(c.idx+2).map((x,j)=>eventHTML(x,c.idx+2+j,d.date)).join('');
+ }
+ if((d.daySections||[]).length){
+   h+=`<div class="section"><h2>Notas do dia</h2></div>`+
+   d.daySections.map(s=>`<div class="alert"><b>${s.title}</b><br>${s.text.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('\n','<br>')}</div>`).join('');
+ }
+ $('#content').innerHTML=h;
+ bind();
+}
+function daysView(){
+ let d=APP_DATA.days.find(x=>x.date===selected);
+ let h=`<div class="dayhead"><div class="date">${d.label}</div><div class="city">${d.subtitle||d.heading}</div></div>`+
+ d.events.map((e,i)=>eventHTML(e,i,d.date)).join('');
+ if((d.daySections||[]).length){
+   h+=`<div class="section"><h2>Notas do dia</h2></div>`+
+   d.daySections.map(s=>`<div class="alert"><b>${s.title}</b><br>${s.text.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('\n','<br>')}</div>`).join('');
+ }
+ h+=`<div class="section"><h2>Texto completo deste dia</h2><span>fonte PDF</span></div>
+ <button class="toggle" id="rawtoggle">abrir texto integral</button>
+ <div class="raw hidden" id="raw">${d.raw.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')}</div>`;
+ $('#content').innerHTML=h;
+ bind();
+ $('#rawtoggle').onclick=()=>{
+   $('#raw').classList.toggle('hidden');
+   $('#rawtoggle').textContent=$('#raw').classList.contains('hidden')?'abrir texto integral':'fechar texto integral'
+ };
+}
 function resView(){let h=`<div class="section"><h2>Reservas & tarefas</h2></div><input class="search" id="rs" placeholder="Pesquisar…"><div class="grid" id="rlist">`+APP_DATA.reservations.map(r=>`<div class="card ri"><div class="summary">${r.when}</div><h3>${r.name}</h3><span class="badge ${r.status==='RESERVADO'?'reserved':r.status==='POR TRATAR'?'todo':'confirm'}">${r.status}</span><p>${r.note}</p></div>`).join('')+`</div>`;$('#content').innerHTML=h;$('#rs').oninput=e=>$$('.ri').forEach(x=>x.classList.toggle('hidden',!x.innerText.toLowerCase().includes(e.target.value.toLowerCase())))}
 function alertsView(){let h=`<div class="section"><h2>Alertas críticos</h2></div>`+APP_DATA.critical.map(x=>`<div class="alert"><b>${x.title}</b><br>${x.text}</div>`).join('');$('#content').innerHTML=h}
 function infoView(){let h=`<div class="section"><h2>Alojamentos</h2></div><div class="grid">`+APP_DATA.hotels.map(x=>`<div class="card"><div class="summary">${x.city}</div><h3>${x.name}</h3><p>${x.address}</p><a class="map" target="_blank" href="${navUrl(x.name+' '+x.address)}">Naver Map ↗</a></div>`).join('')+`</div><div class="section"><h2>Regras rápidas</h2></div><div class="grid">

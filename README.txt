@@ -33,3 +33,12 @@ VERSÃO v5
 - OPÇÃO B / SE ESTIVERMOS ATRASADOS / notas semelhantes aparecem fora das atividades
 - RESUMO deixa de aparecer na interface (é redundante com a lista de atividades)
 - correção específica do dia 30: Cheonmasan contém apenas informação sobre Cheonmasan
+
+
+VERSÃO v6
+- corrige definitivamente o problema de cache das versões anteriores
+- elimina caches v3/v4/v5 ao ativar
+- assets com ?v=6 para forçar atualização no GitHub Pages
+- indicador “v6” visível no topo da app
+- Notas do dia são renderizadas fora das atividades
+- Dia 30 verificado: Opção B / atrasos / resumo não aparecem dentro da última atividade
