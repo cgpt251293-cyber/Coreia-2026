@@ -65,3 +65,16 @@ VERSÃO v10
 - botão “Abrir k.ride” usa a página oficial da k.ride
 - botão “Copiar destino” copia o destino em coreano para colar/pesquisar na app
 - não é usado um deep link de destino porque a k.ride não publica um esquema público estável para isso
+
+
+VERSÃO v11
+- otimizada para Android
+- botão “Abrir k.ride” tenta abrir diretamente a app instalada
+- se a app não estiver instalada / o intent falhar, abre a Play Store
+- botão “Copiar destino” mantém-se para colar o destino em coreano na k.ride
+
+
+VERSÃO v12
+- todos os troços que incluem táxi/k.ride passam também a mostrar Naver Map e Google Maps
+- isto permite comparar transporte público com táxi no próprio cartão
+- corrigido em particular 01/12 14:10 Huinnyeoul → National Maritime Museum
