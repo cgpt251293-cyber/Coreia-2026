@@ -1,4 +1,4 @@
-const APP_VERSION='v18';
+const APP_VERSION='v20';
 let nowAutoTimer=null;
 
 const $=q=>document.querySelector(q), $$=q=>[...document.querySelectorAll(q)];

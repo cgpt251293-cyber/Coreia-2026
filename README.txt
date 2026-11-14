@@ -131,3 +131,10 @@ VERSÃO v18
 - levar óculos atuais e caixas/foto da graduação das lentes
 - tax refund da filial não confirmado: perguntar antes de pagar e levar passaporte
 - mapa direto para 으뜸50안경 명동점
+
+
+VERSÃO v20
+- 28/11: Beauty Play Busan em Seomyeon para análise de pele gratuita (~20–30 min)
+- 30/11: Olive Young Nampo mantém-se com prioridade para SCALP SCAN
+- removidas as referências à CCA Hair/permanente do roteiro
+- mantida a nota da ótica Uteum 50 no dia 03/12
