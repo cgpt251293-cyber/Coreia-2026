@@ -120,3 +120,14 @@ VERSÃO v17
 - regresso ao CPH ~11:30–11:45, mais de 3 h antes do voo
 - AGORA passa a respeitar o fuso de cada dia: Coreia nos dias coreanos e Europe/Copenhagen nos dias em Copenhaga
 - corrigido também o modo alternativo de 27/11 para usar hora de Copenhaga
+
+
+VERSÃO v18
+- acrescentada nota de ótica no dia 03/12 em Myeongdong
+- Uteum 50 Myeongdong como opção económica
+- reservar 45–60 min; sem marcação obrigatória confirmada
+- pedir lentes tóricas mensais para miopia + astigmatismo e conforto para olhos secos
+- Biofinity Toric como primeira opção; B+L ULTRA / Air Optix HydraGlyde como alternativas
+- levar óculos atuais e caixas/foto da graduação das lentes
+- tax refund da filial não confirmado: perguntar antes de pagar e levar passaporte
+- mapa direto para 으뜸50안경 명동점
