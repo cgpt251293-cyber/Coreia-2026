@@ -151,3 +151,15 @@ VERSÃO v21
 - 01/12: Baskin 100 Flavor como fallback
 - 11/12: Seoul Light Gwanghwamun acrescentado na noite de abertura; Gwanghwamun Market opcional depois
 - 12/12: Seoul Light passa a fallback/revisita; Gwanghwamun Market confirmado
+
+
+VERSÃO v22
+- descrições/resumos e detalhes das atividades podem ser editados no telemóvel
+- apenas o telemóvel com credencial GitHub de escrita mostra os controlos de edição
+- o token fica exclusivamente no localStorage desse telemóvel; nunca entra no código nem no ficheiro partilhado
+- os restantes telemóveis são só de leitura e recebem shared-overrides.json automaticamente
+- alterações feitas offline ficam pendentes e são sincronizadas quando a Internet regressa
+- botão Restaurar original cria uma alteração de reposição partilhada
+- estado de sincronização visível no topo e em INFO
+- sincronização pré-configurada para cgpt251293-cyber/Coreia-2026 (branch main); os leitores não precisam de configurar nada
+- token recomendado: fine-grained PAT restrito ao repositório da viagem, Contents: Read and write

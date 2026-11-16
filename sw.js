@@ -1,12 +1,13 @@
-const CACHE='coreia-2026-v21';
+const CACHE='coreia-2026-v22';
 const ASSETS=[
   './',
   './index.html',
-  './style.css?v=21',
-  './data.js?v=21',
-  './app.js?v=21',
+  './style.css?v=22',
+  './data.js?v=22',
+  './app.js?v=22',
   './manifest.json',
   './version.json',
+  './shared-overrides.json',
   './lembretes_coreia_2026.ics',
   './icon-192.png',
   './icon-512.png'
