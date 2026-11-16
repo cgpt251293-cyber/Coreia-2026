@@ -138,3 +138,16 @@ VERSÃO v20
 - 30/11: Olive Young Nampo mantém-se com prioridade para SCALP SCAN
 - removidas as referências à CCA Hair/permanente do roteiro
 - mantida a nota da ótica Uteum 50 no dia 03/12
+
+
+VERSÃO v21
+- 28/11: Hurshimchung sem early check-in; ZM passou para ~11:00/11:15 e não é sacrificado
+- 28/11: Beauty Play ~13:15; Baskin-Robbins 100 Flavor Seomyeon depois de Gwangalli
+- early check-in: dormir no hotel e saltar Hurshimchung
+- voo perdido: Beauty Play eliminado; dia 30 passa a SKIN + SCALP SCAN
+- voo perdido: ZM recuperado em 29/11 com táxi Yonggungsa → ZM
+- 05/12: MUSINSA STANDARD Hongdae + TRIBE Souffle & Coffee
+- 09/12: Hyundai City Outlet Dongdaemun mantido; prioridade a sapatilhas/sportswear no 5F; Gimpo não entra
+- 01/12: Baskin 100 Flavor como fallback
+- 11/12: Seoul Light Gwanghwamun acrescentado na noite de abertura; Gwanghwamun Market opcional depois
+- 12/12: Seoul Light passa a fallback/revisita; Gwanghwamun Market confirmado
