@@ -1,4 +1,4 @@
-const APP_VERSION='v25';
+const APP_VERSION='v30';
 let nowAutoTimer=null;
 
 // --- v22 · alterações partilhadas ---
@@ -253,7 +253,9 @@ function eventHTML(base,i,d,now=false){
  <button class="done ${is?'on':''}" data-k="${k}" aria-label="Concluído"></button>
  <div class="time">${e.time}</div>
  <div><div class="title">${e.title}</div><div class="event-tools">${changed}${edit}</div>${e.summary?`<div class="summary">${esc(e.summary)}</div>`:''}
+ ${e.deadline?`<div class="deadline-card">⏰ <strong>HORA-LIMITE:</strong> ${esc(e.deadline)}</div>`:''}
  ${e.details?`<button class="toggle" data-toggle>ver detalhes</button><div class="details hidden">${esc(e.details)}</div>`:''}
+ ${e.bookingLinks?.length?`<div class="ticket-actions bus-bookings">${e.bookingLinks.map(l=>`<a class="ticket-btn" target="_blank" rel="noopener noreferrer" href="${esc(l.url)}">${esc(l.label)} ↗</a>`).join('')}${e.bookingHint?`<div class="booking-hint">${esc(e.bookingHint)}</div>`:''}</div>`:''}
  ${maps}${taxi}</div></div>`
 }
 function bind(){

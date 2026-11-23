@@ -178,4 +178,12 @@ V24 — MODO OFFLINE, SINCRONIZACAO MANUAL
 - Se o Android apagar os dados do browser/app, sera necessario voltar a fazer a instalacao offline com Internet.
 
 
-V25 (23/11/2026): texto integral e cartões do dia 11 atualizados (Hangang Bus 12:56–14:04, compras Lotte, Seokchon Luminarie, Seoul Lantern Festival); funcionamento offline-first e sincronização manual mantidos. Testar modo avião após abrir online pelo menos uma vez.
+V26 (23/11/2026): texto integral e cartões do dia 11 atualizados (Hangang Bus 12:56–14:04, compras Lotte, Seokchon Luminarie, Seoul Lantern Festival); funcionamento offline-first e sincronização manual mantidos. Testar modo avião após abrir online pelo menos uma vez.
+
+V27: corrigido aeroporto para Terminal 2, horários AREX T2 e avisos de hora-limite nos cartões dos transportes. Limite 22:22 é operacional (prudente), não o último comboio oficial.
+
+
+V30 — 23/11/2026
+Botões de compra nos cartões do autocarro noturno de 27/11: Klook (rota direta) e KOBUS oficial.
+A partida da 01h00 deve ser procurada no dia 28/11/2026, não em 27/11.
+Os links externos necessitam de Internet, mas o roteiro continua offline.
