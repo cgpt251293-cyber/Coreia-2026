@@ -1,4 +1,4 @@
-const APP_VERSION='v23';
+const APP_VERSION='v25';
 let nowAutoTimer=null;
 
 // --- v22 · alterações partilhadas ---
@@ -14,7 +14,7 @@ let editorToken=localStorage.getItem(EDITOR_TOKEN_KEY)||'';
 let syncConfig=loadSyncConfig();
 let syncTimer=null;
 let syncBusy=false;
-let syncMessage=navigator.onLine?'A sincronizar…':'Offline';
+let syncMessage=navigator.onLine?'pronto · atualização manual':'Offline';
 let eventRegistry={};
 
 function emptyShared(){return{version:1,updatedAt:null,overrides:{}}}
@@ -54,7 +54,7 @@ function applyEventOverride(date,e){
  return{...e,summary:Object.prototype.hasOwnProperty.call(o,'summary')?o.summary:e.summary,details:Object.prototype.hasOwnProperty.call(o,'details')?o.details:e.details,_sharedEdited:true,_editedAt:o.editedAt||null};
 }
 function esc(s){return String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')}
-function markPending(){sharedPending=true;localStorage.setItem(SHARED_PENDING_KEY,'1');syncMessage=navigator.onLine?'Alterações por sincronizar':'Offline · alterações guardadas';updateSyncPill()}
+function markPending(){sharedPending=true;localStorage.setItem(SHARED_PENDING_KEY,'1');syncMessage=navigator.onLine?'alterações guardadas · por enviar manualmente':'Offline · alterações guardadas';updateSyncPill()}
 function clearPending(){sharedPending=false;localStorage.removeItem(SHARED_PENDING_KEY)}
 function latestIso(a,b){if(!a)return b||null;if(!b)return a;return a>b?a:b}
 function mergeShared(a,b){
@@ -75,7 +75,7 @@ function updateSyncPill(){
  const p=document.getElementById('syncPill');if(!p)return;
  if(!navigator.onLine){p.textContent=sharedPending?'📴 alterações pendentes':'📴 offline';p.className='sync-pill offline';return}
  if(sharedPending){p.textContent='⏳ por sincronizar';p.className='sync-pill pending';return}
- p.textContent='☁️ '+(syncMessage||'sincronizado');p.className='sync-pill synced';
+ p.textContent='📱 '+(syncMessage||'guardado no telemóvel');p.className='sync-pill synced';
 }
 async function pullShared(){
  if(sharedPending&&isEditor()) return false;
@@ -148,10 +148,10 @@ function openEventEditor(key){
  modal.querySelector('.modal-close').onclick=closeModal;modal.onclick=e=>{if(e.target===modal)closeModal()};
  modal.querySelector('#saveEventEdit').onclick=async()=>{
    const summary=modal.querySelector('#editSummary').value,details=modal.querySelector('#editDetails').value,ts=new Date().toISOString();
-   sharedState.overrides[key]={summary,details,editedAt:ts,deleted:false};sharedState.updatedAt=ts;saveSharedLocal();markPending();closeModal();render();showToast('Alteração guardada.');await pushSharedChanges();
+   sharedState.overrides[key]={summary,details,editedAt:ts,deleted:false};sharedState.updatedAt=ts;saveSharedLocal();markPending();closeModal();render();showToast('Guardada neste telemóvel. Sincroniza quando quiseres.');
  };
  modal.querySelector('#restoreOriginal').onclick=async()=>{
-   const ts=new Date().toISOString();sharedState.overrides[key]={deleted:true,editedAt:ts};sharedState.updatedAt=ts;saveSharedLocal();markPending();closeModal();render();showToast('Texto original restaurado.');await pushSharedChanges();
+   const ts=new Date().toISOString();sharedState.overrides[key]={deleted:true,editedAt:ts};sharedState.updatedAt=ts;saveSharedLocal();markPending();closeModal();render();showToast('Restaurado neste telemóvel. Sincroniza quando quiseres.');
  };
 }
 function openEditorSetup(){
@@ -176,8 +176,10 @@ function openEditorSetup(){
  };
 }
 function startSharedSync(){
- syncNow();if(syncTimer)clearInterval(syncTimer);syncTimer=setInterval(syncNow,45000);
+ // Modo offline-first: nenhuma consulta automática à Internet.
+ if(syncTimer)clearInterval(syncTimer);syncTimer=null;
 }
+
 
 const $=q=>document.querySelector(q), $$=q=>[...document.querySelectorAll(q)];
 let view='now', selected=APP_DATA.days[0].date;
@@ -371,9 +373,9 @@ function resView(){
 function alertsView(){let h=`<div class="card delay-control"><h3>✈️ Atraso / perda do voo</h3><p>${APP_DATA.flightDelayScenario.description}</p><button class="delay-toggle ${flightDelayMode?'on':''}" id="delayToggle">${flightDelayMode?'Desativar modo atraso':'Ativar chegada em 28/11'}</button></div>`+`<div class="section"><h2>Alertas críticos</h2></div>`+APP_DATA.critical.map(x=>`<div class="alert"><b>${x.title}</b><br>${x.text}</div>`).join('');$('#content').innerHTML=h;$('#delayToggle').onclick=toggleFlightDelay}
 function infoView(){
  let h=`<div class="section"><h2>App</h2></div>
- <div class="card sync-card"><h3>☁️ Alterações partilhadas</h3><p>${isEditor()?'Este telemóvel é o <b>editor</b>. As alterações a descrições/detalhes são publicadas para os restantes telemóveis.':'Modo de leitura. As alterações feitas pela editora são recebidas automaticamente quando houver Internet.'}</p><div class="sync-actions"><button class="update-btn" id="syncNowBtn">↻ Sincronizar agora</button><button class="editor-btn" id="editorSetupBtn">${isEditor()?'⚙️ Configurar edição':'🔐 Ativar modo edição'}</button></div><div class="sync-small">Estado: ${esc(syncMessage)}${sharedPending?' · alterações pendentes':''}</div></div>
+ <div class="card sync-card"><h3>📴 Offline primeiro · alterações partilhadas</h3><p>${isEditor()?'Este telemóvel é o <b>editor</b>. As descrições/detalhes ficam guardados neste telemóvel. Carrega em Sincronizar para enviar aos restantes telemóveis.':'Modo de leitura. As alterações partilhadas são recebidas apenas quando carregares em Sincronizar (requer Internet).'}</p><div class="sync-actions"><button class="update-btn" id="syncNowBtn">↻ Sincronizar agora</button><button class="editor-btn" id="editorSetupBtn">${isEditor()?'⚙️ Configurar edição':'🔐 Ativar modo edição'}</button></div><div class="sync-small">Estado: ${esc(syncMessage)}${sharedPending?' · alterações pendentes':''}</div></div>
  <div class="card delay-control"><h3>✈️ Modo atraso de voo</h3><p>${flightDelayMode?'ATIVO — chegada prevista em 28/11':'Desativado — roteiro normal'}</p><button class="delay-toggle ${flightDelayMode?'on':''}" id="delayToggleInfo">${flightDelayMode?'Desativar':'Ativar chegada em 28/11'}</button></div>
- <div class="card update-card"><h3>Coreia 2026 · ${APP_VERSION}</h3><p id="updateStatus">Versão instalada: <b>${APP_VERSION}</b></p><button class="update-btn" id="checkUpdate">🔄 Verificar atualização</button></div>
+ <div class="card update-card"><h3>Coreia 2026 · ${APP_VERSION}</h3><p>A app não verifica atualizações automaticamente. Apenas este botão usa dados para procurar e descarregar uma versão nova.</p><p id="updateStatus">Versão instalada: <b>${APP_VERSION}</b></p><button class="update-btn" id="checkUpdate">🔄 Verificar atualização</button></div>
  <div class="section"><h2>Alojamentos</h2></div><div class="grid">`+
  APP_DATA.hotels.map(x=>`<div class="card"><div class="summary">${x.city}</div><h3>${x.name}</h3><p>${x.address}</p><div class="map-actions"><a class="map" target="_blank" rel="noopener" href="${navUrl(x.map||x.name+' '+x.address)}">Naver → destino ↗</a><a class="map secondary" target="_blank" rel="noopener" href="${googleUrl(x.map||x.name+' '+x.address)}">Google Maps ↗</a></div></div>`).join('')+
  `</div><div class="section"><h2>Regras rápidas</h2></div><div class="grid">
@@ -385,27 +387,31 @@ function infoView(){
  $('#checkUpdate').onclick=checkForUpdate;$('#delayToggleInfo').onclick=toggleFlightDelay;$('#syncNowBtn').onclick=async()=>{syncMessage='a sincronizar…';updateSyncPill();await syncNow();render()};$('#editorSetupBtn').onclick=openEditorSetup;updateSyncPill();
 }
 async function checkForUpdate(){
- const s=$('#updateStatus'), b=$('#checkUpdate');
+ const st=$('#updateStatus'), btn=$('#checkUpdate');
+ if(!navigator.onLine){st.textContent='Sem Internet. O roteiro continua disponível offline.';return}
+ btn.disabled=true; st.textContent='A verificar nova versão…';
  try{
-   b.disabled=true;s.innerHTML='A verificar…';
-   const r=await fetch('./version.json?t='+Date.now(),{cache:'no-store'});
-   if(!r.ok) throw new Error('version');
-   const v=await r.json();
-   if(v.version===APP_VERSION){
-     s.innerHTML=`Já tens a versão mais recente: <b>${APP_VERSION}</b>.`;
-     b.disabled=false;
-     return;
-   }
-   s.innerHTML=`Nova versão <b>${v.version}</b> encontrada. A atualizar…`;
-   if('serviceWorker' in navigator){
-     const reg=await navigator.serviceWorker.getRegistration();
-     if(reg) await reg.update();
-   }
-   setTimeout(()=>location.replace(location.pathname+'?updated='+Date.now()),900);
- }catch(err){
-   s.textContent=navigator.onLine?'Não consegui verificar agora. Tenta novamente.':'Sem Internet — não é possível verificar atualizações.';
-   b.disabled=false;
- }
+  // Pedido explícito do utilizador: único bypass de rede para os ficheiros da app.
+  const r=await fetch('./version.json?manual_update='+Date.now(),{cache:'no-store'});
+  if(!r.ok) throw new Error('Não foi possível consultar a versão');
+  const v=await r.json();
+  if(!/^v[0-9]+$/.test(v.version||''))throw new Error('Versão inválida');
+  if(v.version===APP_VERSION){st.textContent='Já tens a versão mais recente: '+APP_VERSION+'.';btn.disabled=false;return}
+  st.textContent='Versão '+v.version+' encontrada. A descarregar para utilização offline…';
+  if(!('serviceWorker' in navigator)) throw new Error('Browser sem Service Worker');
+  let reg=await navigator.serviceWorker.getRegistration();
+  if(!reg){reg=await navigator.serviceWorker.register('./sw.js');await navigator.serviceWorker.ready}
+  const worker=navigator.serviceWorker.controller||reg.active;
+  if(!worker)throw new Error('Fecha e reabre a app com Internet para ativar o modo offline');
+  const result=await new Promise((resolve,reject)=>{
+   const channel=new MessageChannel();
+   const timeout=setTimeout(()=>reject(new Error('Tempo de atualização excedido')),45000);
+   channel.port1.onmessage=e=>{clearTimeout(timeout);e.data?.ok?resolve(e.data):reject(new Error(e.data?.error||'Não foi possível descarregar'))};
+   worker.postMessage({type:'MANUAL_UPDATE',version:v.version},[channel.port2]);
+  });
+  st.textContent='Ficheiros guardados. A abrir a nova versão…';
+  setTimeout(()=>location.reload(),450);
+ }catch(err){st.textContent='Não foi possível atualizar: '+err.message+'. O roteiro guardado continua disponível.';btn.disabled=false}
 }
 let activitySearchTerm='';
 function normalizedSearch(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
@@ -453,7 +459,7 @@ function setNav(){$$('.nav button').forEach(b=>b.classList.toggle('on',b.dataset
 function render(){view==='now'?nowView():view==='days'?daysView():view==='res'?resView():view==='alerts'?alertsView():view==='search'?searchView():infoView()}
 $$('.nav button').forEach(b=>b.onclick=()=>{view=b.dataset.view;setNav();render()});
 renderTabs();render();updateSyncPill();startSharedSync();
-addEventListener('online',()=>{syncMessage='a sincronizar…';updateSyncPill();syncNow()});
+addEventListener('online',()=>{syncMessage=sharedPending?'alterações por enviar manualmente':'pronto · atualização manual';updateSyncPill()});
 addEventListener('offline',()=>updateSyncPill());
 let dp;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('#install').style.display='block'});$('#install').onclick=async()=>{if(dp){dp.prompt();await dp.userChoice;dp=null;$('#install').style.display='none'}};
 if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js');

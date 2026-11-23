@@ -165,3 +165,17 @@ VERSÃO v22
 - token recomendado: fine-grained PAT restrito ao repositório da viagem, Contents: Read and write
 
 VERSÃO v23: Daiso Seomyeon (28/11); Lotte World Mall antes do mercado (11/12); Seokchon Luminarie e Seoul Lantern Festival à noite (11/12); pesquisa global por atividade, descrição e local; Soul Ocean opcional no último dia sem atrasar o voo. A secção «texto integral» mantém o documento PDF histórico, enquanto os cartões de atividades refletem o horário atualizado.
+
+
+V24 — MODO OFFLINE, SINCRONIZACAO MANUAL
+- Publicar todos os ficheiros no GitHub Pages.
+- Abrir a app COM Internet uma vez e aguardar a instalacao em cache (idealmente fechar e reabrir uma vez).
+- Depois, AGORA/DIAS/PESQUISA/RESERVAS/ALERTAS/INFO funcionam sem dados.
+- INFO > Sincronizar agora: consulta/envi­a alteracoes partilhadas apenas quando solicitado.
+- INFO > Verificar atualizacao: procura e descarrega nova versao apenas quando solicitado.
+- Edicoes feitas offline ficam no telemovel ate sincronizacao manual.
+- Links externos Naver Maps, Google Maps e Drive precisam de rede quando abertos.
+- Se o Android apagar os dados do browser/app, sera necessario voltar a fazer a instalacao offline com Internet.
+
+
+V25 (23/11/2026): texto integral e cartões do dia 11 atualizados (Hangang Bus 12:56–14:04, compras Lotte, Seokchon Luminarie, Seoul Lantern Festival); funcionamento offline-first e sincronização manual mantidos. Testar modo avião após abrir online pelo menos uma vez.
