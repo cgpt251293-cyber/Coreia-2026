@@ -1,4 +1,4 @@
-const APP_VERSION='v22';
+const APP_VERSION='v23';
 let nowAutoTimer=null;
 
 // --- v22 · alterações partilhadas ---
@@ -247,7 +247,7 @@ function eventHTML(base,i,d,now=false){
  }
  const changed=e._sharedEdited?`<span class="edited-badge">✎ alterado</span>`:'';
  const edit=isEditor()?`<button class="edit-event" data-edit-key="${esc(key)}" type="button">✏️ editar</button>`:'';
- return `<div class="event ${now?'now':''} ${is?'completed':''} ${e._sharedEdited?'shared-edited':''}">
+ return `<div id="event-${d}-${i}" class="event ${now?'now':''} ${is?'completed':''} ${e._sharedEdited?'shared-edited':''}">
  <button class="done ${is?'on':''}" data-k="${k}" aria-label="Concluído"></button>
  <div class="time">${e.time}</div>
  <div><div class="title">${e.title}</div><div class="event-tools">${changed}${edit}</div>${e.summary?`<div class="summary">${esc(e.summary)}</div>`:''}
@@ -407,8 +407,50 @@ async function checkForUpdate(){
    b.disabled=false;
  }
 }
+let activitySearchTerm='';
+function normalizedSearch(s){return String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()}
+function searchView(){
+ const q=normalizedSearch(activitySearchTerm.trim());
+ let matches=[];
+ if(q){
+  for(const base of APP_DATA.days){
+   const day=activeDay(base);
+   (day.events||[]).forEach((original,i)=>{
+    const e=applyEventOverride(day.date,original);
+    const searchable=[e.title,e.time,e.summary,e.details,e.map,day.heading,day.subtitle,day.label].join(' ');
+    if(normalizedSearch(searchable).includes(q)) matches.push({day,event:e,index:i});
+   });
+  }
+ }
+ const content=document.getElementById('content');
+ content.innerHTML=`<div class="section"><h2>🔎 Pesquisar atividades</h2><p>Procura por nome, local ou descrição em todos os dias do roteiro.</p></div>
+ <input class="search activity-search-input" id="activitySearch" type="search" placeholder="Ex.: Daiso, BTS, lanternas, skincare…" autocomplete="off" value="${esc(activitySearchTerm)}" aria-label="Pesquisar atividades">
+ <div id="activitySearchResults" aria-live="polite"></div>`;
+ const field=document.getElementById('activitySearch');
+ field.oninput=()=>{activitySearchTerm=field.value;drawActivityResults()};
+ drawActivityResults();
+}
+function drawActivityResults(){
+ const q=normalizedSearch(activitySearchTerm.trim());
+ const results=document.getElementById('activitySearchResults');if(!results)return;
+ if(!q){results.innerHTML='<div class="search-hint">Escreve para encontrar atividades em qualquer dia.</div>';return}
+ let matches=[];
+ for(const base of APP_DATA.days){
+  const day=activeDay(base);
+  day.events.forEach((original,i)=>{
+   const e=applyEventOverride(day.date,original);
+   if(normalizedSearch([e.title,e.time,e.summary,e.details,e.map,day.heading,day.subtitle,day.label].join(' ')).includes(q))matches.push({day,event:e,index:i});
+  });
+ }
+ results.innerHTML=`<div class="search-count">${matches.length} resultado(s)</div>`+matches.slice(0,100).map(({day,event,index})=>`<button type="button" class="search-result" data-result-date="${day.date}" data-result-index="${index}"><span class="search-result-date">${esc(day.label)} · ${esc(event.time)}</span><strong>${esc(event.title)}</strong><span>${esc(event.summary||day.subtitle||'')}</span></button>`).join('')+(matches.length>100?'<p>Mostrados os primeiros 100 resultados. Refina a pesquisa.</p>':'');
+ results.querySelectorAll('[data-result-date]').forEach(b=>b.onclick=()=>{
+  selected=b.dataset.resultDate;view='days';setNav();renderTabs();render();
+  const el=document.getElementById('event-'+selected+'-'+b.dataset.resultIndex);
+  if(el){el.classList.add('search-target');el.scrollIntoView({behavior:'smooth',block:'center'});}
+ });
+}
 function setNav(){$$('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.view===view))}
-function render(){view==='now'?nowView():view==='days'?daysView():view==='res'?resView():view==='alerts'?alertsView():infoView()}
+function render(){view==='now'?nowView():view==='days'?daysView():view==='res'?resView():view==='alerts'?alertsView():view==='search'?searchView():infoView()}
 $$('.nav button').forEach(b=>b.onclick=()=>{view=b.dataset.view;setNav();render()});
 renderTabs();render();updateSyncPill();startSharedSync();
 addEventListener('online',()=>{syncMessage='a sincronizar…';updateSyncPill();syncNow()});

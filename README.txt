@@ -163,3 +163,5 @@ VERSÃO v22
 - estado de sincronização visível no topo e em INFO
 - sincronização pré-configurada para cgpt251293-cyber/Coreia-2026 (branch main); os leitores não precisam de configurar nada
 - token recomendado: fine-grained PAT restrito ao repositório da viagem, Contents: Read and write
+
+VERSÃO v23: Daiso Seomyeon (28/11); Lotte World Mall antes do mercado (11/12); Seokchon Luminarie e Seoul Lantern Festival à noite (11/12); pesquisa global por atividade, descrição e local; Soul Ocean opcional no último dia sem atrasar o voo. A secção «texto integral» mantém o documento PDF histórico, enquanto os cartões de atividades refletem o horário atualizado.
