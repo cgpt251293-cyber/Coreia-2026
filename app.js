@@ -1,4 +1,4 @@
-const APP_VERSION='v30';
+const APP_VERSION='v31';
 let nowAutoTimer=null;
 
 // --- v22 · alterações partilhadas ---

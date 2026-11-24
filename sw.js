@@ -1,6 +1,6 @@
 // Coreia 2026 — versão offline-first. Nunca consulta a rede para abrir a app.
 // Apenas os comandos MANUAL_UPDATE / pedidos marcados manual_update consultam a rede.
-const CACHE='coreia-2026-offline-manual-v30';
+const CACHE='coreia-2026-offline-manual-v31';
 const ASSETS=['./','./index.html','./style.css?v=30','./data.js?v=30','./app.js?v=30','./manifest.json','./version.json','./shared-overrides.json','./lembretes_coreia_2026.ics','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{
  self.skipWaiting();

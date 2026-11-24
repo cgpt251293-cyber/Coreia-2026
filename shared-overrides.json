@@ -1,16 +1,5 @@
 {
   "version": 1,
-  "updatedAt": "2026-11-23T17:53:29.034Z",
-  "overrides": {
-    "2026-12-12::BLOCO DE RECUPERAÇÃO": {
-      "summary": "Primeiro usar este tempo para alguma coisa importante que tenha falhado durante a viagem.",
-      "details": "Primeiro usar este tempo para alguma coisa importante que tenha falhado durante a viagem.\nPrioridade\nalguma atração obrigatória perdida por meteorologia;\nGyeongbokgung, se a cerimónia tiver sido cancelada;\ncompras importantes que tenham ficado por fazer.\nSE TUDO CORREU COMO PREVISTO\nFazer:\nNAMDAEMUN → MYEONGDONG\nSem pressa e sem nova checklist turística.",
-      "editedAt": "2026-11-16T23:45:27.990Z",
-      "deleted": false
-    },
-    "2026-11-27::Aterragem em Incheon (ICN)": {
-      "deleted": true,
-      "editedAt": "2026-11-23T16:45:32.646Z"
-    }
-  }
+  "updatedAt": null,
+  "overrides": {}
 }
