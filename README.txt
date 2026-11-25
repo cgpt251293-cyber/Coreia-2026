@@ -188,11 +188,4 @@ Botões de compra nos cartões do autocarro noturno de 27/11: Klook (rota direta
 A partida da 01h00 deve ser procurada no dia 28/11/2026, não em 27/11.
 Os links externos necessitam de Internet, mas o roteiro continua offline.
 
-
-ATUALIZAÇÃO v31 — 24/11/2026
-- 4 lugares Klook já reservados: Seoul Express Bus Terminal GYEONGBU → Busan Central (Nopo), 28/11 00:50–04:50, Chunil Express/Excelente.
-- Incheon T2 → AREX All-Stop → Gimpo → Linha 9 → Express Bus Terminal (Gyeongbu, nunca Central City).
-- No dia 28/11, esperar pelo primeiro metro de Nopo antes de seguir para Seomyeon/Ssangma Motel.
-- Aviso sobre reserva no cenário de perda de ligação em Copenhaga.
-- Preservadas funcionalidades offline, edição/sincronização e outros dias.
-- Substituir todos os ficheiros da v30 no repositório pela v31; atualizar a app pelo mecanismo manual existente.
+V31: alterados apenas os dias 8 e 10 de dezembro: Ikseon-dong 1h20, Naksan antes do pôr do sol, Gwangjang ao jantar em 10/12.
