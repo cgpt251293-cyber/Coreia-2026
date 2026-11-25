@@ -1,7 +1,7 @@
 // Coreia 2026 — versão offline-first. Nunca consulta a rede para abrir a app.
 // Apenas os comandos MANUAL_UPDATE / pedidos marcados manual_update consultam a rede.
-const CACHE='coreia-2026-offline-manual-v32';
-const ASSETS=['./','./index.html','./style.css?v=32','./data.js?v=32','./app.js?v=32','./manifest.json','./version.json','./shared-overrides.json','./lembretes_coreia_2026.ics','./icon-192.png','./icon-512.png'];
+const CACHE='coreia-2026-offline-manual-v33';
+const ASSETS=['./','./index.html','./style.css?v=33','./data.js?v=33','./app.js?v=33','./manifest.json','./version.json','./shared-overrides.json','./lembretes_coreia_2026.ics','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',event=>{
  self.skipWaiting();
  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));
@@ -18,6 +18,16 @@ self.addEventListener('fetch',event=>{
   const cache=await caches.open(CACHE);
   const response=await cache.match(event.request,{ignoreSearch:event.request.mode==='navigate'});
   if(response)return response;
+  // Salvaguarda: ficheiros estáticos podem ter um parâmetro de versão antigo no HTML.
+  // Mantém a app offline; nunca devolve HTML no lugar de CSS ou JavaScript.
+  if (/\.(?:css|js)$/.test(url.pathname)) {
+   const fallback=await cache.match(event.request,{ignoreSearch:true});
+   if(fallback && fallback.ok) {
+    const ct=fallback.headers.get('Content-Type')||'';
+    if ((url.pathname.endsWith('.css') && ct.includes('css')) ||
+        (url.pathname.endsWith('.js') && (ct.includes('javascript')||ct.includes('text/plain')||ct===''))) return fallback;
+   }
+  }
   if(event.request.mode==='navigate')return await cache.match('./index.html')||Response.error();
   // Nunca devolver HTML como JavaScript/CSS; não consumir dados para preencher falhas.
   return new Response('Ficheiro indisponível offline. Abrir a app online e atualizar manualmente.',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}});

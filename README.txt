@@ -189,3 +189,5 @@ A partida da 01h00 deve ser procurada no dia 28/11/2026, não em 27/11.
 Os links externos necessitam de Internet, mas o roteiro continua offline.
 
 V31: alterados apenas os dias 8 e 10 de dezembro: Ikseon-dong 1h20, Naksan antes do pôr do sol, Gwangjang ao jantar em 10/12.
+
+CORREÇÃO v33: referência CSS sincronizada com cache offline; mantém dados e edições da v32.
