@@ -191,3 +191,9 @@ Os links externos necessitam de Internet, mas o roteiro continua offline.
 V31: alterados apenas os dias 8 e 10 de dezembro: Ikseon-dong 1h20, Naksan antes do pôr do sol, Gwangjang ao jantar em 10/12.
 
 CORREÇÃO v33: referência CSS sincronizada com cache offline; mantém dados e edições da v32.
+
+
+ATUALIZAÇÃO V35 (26/11/2026)
+- 28/11: Millak Luce Festa após o drone show; regresso e Baskin Robbins ajustados sem remoção.
+- 29/11: Seomyeon Light Festival após regresso de Centum City, junto ao hotel.
+- Cartões e roteiros em texto coerentes; funcionamento offline e sincronização manual preservados.
